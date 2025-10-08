@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 20-11-2024 a las 20:16:04
+-- Servidor: localhost:3306
+-- Tiempo de generación: 08-10-2025 a las 06:10:50
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.0.30
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,35 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `huellas_usuario`
---
-
-CREATE TABLE `huellas_usuario` (
-  `id_huella` char(8) NOT NULL,
-  `nombre_huella` varchar(8) NOT NULL,
-  `imagen` mediumblob DEFAULT NULL,
-  `Usuarios_id` char(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `huellas_usuario`
---
-
-INSERT INTO `huellas_usuario` (`id_huella`, `nombre_huella`, `imagen`, `Usuarios_id`) VALUES
-('HU001', 'huella1', NULL, '20222198'),
-('HU002', 'huella2', NULL, '20222252'),
-('HU003', 'huella3', NULL, '20222781'),
-('HU004', 'huella4', NULL, '20222791'),
-('HU005', 'huella5', NULL, '29384018'),
-('HU006', 'huella6', NULL, '20222198'),
-('HU007', 'huella7', NULL, '20222252'),
-('HU008', 'huella8', NULL, '20222781'),
-('HU009', 'huella9', NULL, '20222791'),
-('HU010', 'huella10', NULL, '29384018');
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `ingreso_salas`
 --
 
@@ -63,49 +34,17 @@ CREATE TABLE `ingreso_salas` (
   `hora_salida` time DEFAULT NULL,
   `id_sala` char(3) DEFAULT NULL,
   `id_usuario` char(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `ingreso_salas`
 --
 
 INSERT INTO `ingreso_salas` (`id_ingreso`, `fecha`, `hora_entrada`, `hora_salida`, `id_sala`, `id_usuario`) VALUES
-('IN001', '2024-10-01', '08:00:00', '10:00:00', '1', '20222198'),
-('IN002', '2024-10-02', '09:00:00', '11:00:00', '2', '20222252'),
-('IN003', '2024-10-03', '10:00:00', '12:00:00', '3', '20222781'),
-('IN004', '2024-10-10', '08:30:00', '10:30:00', '3', '20222791'),
-('IN005', '2024-10-05', '09:15:00', '11:15:00', '2', '29384018'),
-('IN006', '2024-10-06', '07:00:00', '09:00:00', '3', '20222198'),
-('IN007', '2024-10-10', '08:00:00', '10:00:00', '3', '20222252'),
-('IN008', '2024-10-10', '11:00:00', '13:00:00', '2', '20222781'),
-('IN009', '2024-11-09', '10:00:00', '12:00:00', '3', '20222791'),
-('IN010', '2024-10-20', '12:00:00', '14:00:00', '1', '29384018');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `tipo_equipo`
---
-
-CREATE TABLE `tipo_equipo` (
-  `id_tipo` char(8) NOT NULL,
-  `nombre` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `tipo_equipo`
---
-
-INSERT INTO `tipo_equipo` (`id_tipo`, `nombre`) VALUES
-('1', 'Cañon'),
-('2', 'Bocina'),
-('3', 'Grabadora'),
-('4', 'Microfono'),
-('5', 'Mouse'),
-('6', 'Laptop'),
-('7', 'Extension'),
-('8', 'Cable de Corriente'),
-('9', 'Cable de Conexion');
+('1759782807', '2025-10-06', '14:33:27', NULL, '1', '20222111'),
+('1759782888', '2025-10-06', '14:34:48', '14:37:07', '2', '20222111'),
+('1759783061', '2025-10-06', '14:37:41', '14:37:57', '2', '20222111'),
+('3', '2025-06-18', '13:53:20', '13:53:20', '3', '20222121');
 
 -- --------------------------------------------------------
 
@@ -114,31 +53,24 @@ INSERT INTO `tipo_equipo` (`id_tipo`, `nombre`) VALUES
 --
 
 CREATE TABLE `inventarios` (
-  `id` char(8) NOT NULL,
+  `id` int(8) NOT NULL,
   `modelo` varchar(30) NOT NULL,
   `marca` varchar(30) DEFAULT NULL,
-  `estado` varchar(30) DEFAULT NULL,
+  `estado` varchar(255) DEFAULT NULL,
   `num_serie` varchar(30) DEFAULT NULL,
-  `descripción` varchar(150) DEFAULT NULL,
-  `Usuarios_id` char(8) NOT NULL,
-  `tipo` char(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `descripcion` varchar(150) DEFAULT NULL,
+  `tipo` int(8) NOT NULL,
+  `id_disponible` int(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `inventarios`
 --
 
-INSERT INTO `inventarios` (`id`, `modelo`, `marca`, `estado`, `num_serie`, `tipo`, `descripción`, `Usuarios_id`) VALUES
-('INV001', 'ModeloA', 'MarcaX', 'Nuevo', 'SN001', '1', 'Cañon', '20222198'),
-('INV002', 'ModeloB', 'MarcaY', 'Usado', 'SN002', '1', 'Cañon', '20222252'),
-('INV003', 'ModeloC', 'MarcaZ', 'Defectuoso', 'SN003', '3', 'Grabadora que graba', '20222781'),
-('INV004', 'ModeloD', 'MarcaW', 'Nuevo', 'SN004', '1', 'Impresora láser', '20222791'),
-('INV005', 'ModeloE', 'MarcaV', 'Usado', 'SN005', '1', 'Tablet para dibujo', '29384018'),
-('INV006', 'ModeloF', 'MarcaU', 'Nuevo', 'SN006', '1', 'Cámara de alta definición', '20222198'),
-('INV007', 'ModeloG', 'MarcaT', 'Defectuoso', 'SN007', '2', 'Teclado mecánico', '20222252'),
-('INV008', 'ModeloH', 'MarcaS', 'Usado', 'SN008', '5', 'Mouse inalámbrico', '20222781'),
-('INV009', 'ModeloI', 'MarcaR', 'Nuevo', 'SN009', '4', 'Proyector portátil', '20222791'),
-('INV010', 'ModeloJ', 'MarcaQ', 'Defectuoso', 'SN010', '2', 'Laptop de gama media', '29384018');
+INSERT INTO `inventarios` (`id`, `modelo`, `marca`, `estado`, `num_serie`, `descripcion`, `tipo`, `id_disponible`) VALUES
+(1, 'HP-3', 'HP', 'En buen estado funcionando al 100%', '441323', 'Es una laptop de caracteristicas medias de tamaño pequeño color negro', 6, 3),
+(3, 'Tilin', 'TilinWindows', 'De la verga', '123123', 'Tilin de', 4, 2),
+(4, 'Insano', 'Windows', 'Muy buen estaod', '13132451', 'Chido', 7, 1);
 
 -- --------------------------------------------------------
 
@@ -147,44 +79,23 @@ INSERT INTO `inventarios` (`id`, `modelo`, `marca`, `estado`, `num_serie`, `tipo
 --
 
 CREATE TABLE `licenciaturas` (
-  `idlicenciatura` char(8) NOT NULL,
-  `nombre` varchar(45) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `id` char(8) NOT NULL,
+  `nombre` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `licenciaturas`
 --
 
-INSERT INTO `licenciaturas` (`idlicenciatura`, `nombre`) VALUES
-('1', 'Ingenería en Computación'),
-('2', 'Ingeneria Quimica'),
-('3', 'Ingeneria en Quimica Industrial'),
-('4', 'Ingeneria en Sistemas Electronicos'),
-('5', 'Ingeneria Mecanica'),
-('6', 'Licenciatura en Inteligencia Artificial'),
-('7', 'Licenciatura en Matematicas Aplicadas');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `permisos`
---
-
-CREATE TABLE `permisos` (
-  `idPermiso` char(1) NOT NULL,
-  `tipo_permiso` varchar(45) DEFAULT NULL,
-  `Roles_idRol` char(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `permisos`
---
-
-INSERT INTO `permisos` (`idPermiso`, `tipo_permiso`, `Roles_idRol`) VALUES
-('1', 'Crear', '1'),
-('2', 'Borrar', '1'),
-('3', 'Actualizar', '1'),
-('4', 'Cambiar estado', '1');
+INSERT INTO `licenciaturas` (`id`, `nombre`) VALUES
+('1', 'Licenciatura en Ingeniería en Computación (2024)'),
+('2', 'Licenciatura en Ingeniería Química (2018)'),
+('3', 'Licenciatura en Química Industrial (2018)'),
+('4', 'Licenciatura en Ingeniería en Sistemas Electrónicos (2024)'),
+('5', 'Licenciatura en Ingeniería Mecánica (2018)'),
+('6', 'Licenciatura en Inteligencia Artificial (2024)'),
+('7', 'Licenciatura en Matematicas Aplicadas (2024)'),
+('8', 'Ingeniería en Computación (2024)');
 
 -- --------------------------------------------------------
 
@@ -193,20 +104,20 @@ INSERT INTO `permisos` (`idPermiso`, `tipo_permiso`, `Roles_idRol`) VALUES
 --
 
 CREATE TABLE `posgrados` (
-  `idposgrado` char(8) NOT NULL,
-  `nombre varchar(8)` varchar(45) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `id` char(8) NOT NULL,
+  `nombre` varchar(45) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `posgrados`
 --
 
-INSERT INTO `posgrados` (`idposgrado`, `nombre varchar(8)`) VALUES
+INSERT INTO `posgrados` (`id`, `nombre`) VALUES
 ('1', 'Doctorado en Ciencas en Ingenieria Quimica'),
-('2', 'Doctorado en Sistemas Computacionales y Elect'),
+('2', 'Doctorado en  Computacionales y Elect'),
 ('3', 'Maestria en Ciencas de la Calidad'),
 ('4', 'Maestria en Ciencias en Ingenieria Quimica'),
-('5', 'Maestria en Ciencias en Sistemas Computaciona'),
+('5', 'Maestria en Ciencias en  Computaciona'),
 ('6', 'Maestria en Ingenieria de Software'),
 ('7', 'Maestria en Uso y Gestion de Tecnologias de l');
 
@@ -217,34 +128,24 @@ INSERT INTO `posgrados` (`idposgrado`, `nombre varchar(8)`) VALUES
 --
 
 CREATE TABLE `prestamos` (
-  `idPrestamo` char(10) NOT NULL,
-  `licenciatura` char(8) DEFAULT NULL,
-  `posgrado` char(8) DEFAULT NULL,
+  `idPrestamo` int(10) NOT NULL,
   `fecha` date NOT NULL,
   `area` varchar(30) NOT NULL,
   `Proposito` varchar(150) DEFAULT NULL,
   `firma` mediumblob NOT NULL,
-  `id_usuario` char(8) NOT NULL,
-  `Inventarios_id` char(8) NOT NULL,
-  `hora_inicio` time NOT NULL,
-  `hora_fin` time NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `id_usuario` char(8) DEFAULT NULL,
+  `inventarios_id` int(8) NOT NULL,
+  `licenciatura` char(8) DEFAULT NULL,
+  `posgrado` char(8) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `prestamos`
 --
 
-INSERT INTO `prestamos` (`idPrestamo`, `licenciatura`, `posgrado`, `fecha`, `area`, `Proposito`, `firma`, `id_usuario`, `Inventarios_id`, `hora_inicio`, `hora_fin`) VALUES
-('PR001', '1', NULL, '2024-11-01', 'Computación', 'Préstamo de laptop para investigación', '', '20222198', 'INV001', '09:00:00', '12:00:00'),
-('PR002', '2', NULL, '2024-11-02', 'Electrónica', 'Préstamo de proyector para clase', '', '20222252', 'INV002', '10:00:00', '13:00:00'),
-('PR003', '3', NULL, '2024-11-03', 'Ingeniería Química', 'Préstamo de monitor para laboratorio', '', '20222781', 'INV003', '11:00:00', '14:00:00'),
-('PR004', '1', '1', '2024-11-04', 'Tecnologías', 'Préstamo de cámara para grabación de tesis', '', '20222791', 'INV006', '12:00:00', '15:00:00'),
-('PR005', '4', NULL, '2024-11-05', 'Sistemas', 'Préstamo de impresora para proyecto de clase', '', '29384018', 'INV004', '13:00:00', '16:00:00'),
-('PR006', '1', '2', '2024-11-06', 'Redes', 'Préstamo de tablet para prácticas', '', '20222198', 'INV005', '14:00:00', '17:00:00'),
-('PR007', '5', NULL, '2024-11-07', 'Mecánica', 'Préstamo de teclado para trabajo grupal', '', '20222252', 'INV007', '15:00:00', '18:00:00'),
-('PR008', '6', NULL, '2024-11-08', 'Inteligencia Artificial', 'Préstamo de mouse inalámbrico para investigación', '', '20222781', 'INV008', '16:00:00', '19:00:00'),
-('PR009', '2', '1', '2024-11-09', 'Electrónica', 'Préstamo de laptop para proyecto personal', '', '20222791', 'INV009', '17:00:00', '20:00:00'),
-('PR010', '3', '3', '2024-11-10', 'Programación', 'Préstamo de proyector para conferencia', '', '29384018', 'INV010', '18:00:00', '21:00:00');
+INSERT INTO `prestamos` (`idPrestamo`, `fecha`, `area`, `Proposito`, `firma`, `id_usuario`, `inventarios_id`, `licenciatura`, `posgrado`) VALUES
+(15359, '2025-06-16', 'Sala A', 'Lo nececito para usar el siia', 0x716531, NULL, 1, NULL, '1'),
+(63510, '2025-06-16', 'Pene', 'Penear', 0x61, NULL, 1, NULL, '1');
 
 -- --------------------------------------------------------
 
@@ -261,26 +162,41 @@ CREATE TABLE `reservaciones_salas` (
   `tipo_reservacion` tinyint(1) DEFAULT NULL,
   `id_usuario` char(8) DEFAULT NULL,
   `id_sala` char(3) DEFAULT NULL,
-  `posgrado` char(8) NOT NULL,
-  `licenciatura` char(8) NOT NULL,
+  `posgrado` char(8) DEFAULT NULL,
+  `licenciatura` char(8) DEFAULT NULL,
   `unidad_aprendizaje` char(8) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `reservaciones_salas`
 --
 
 INSERT INTO `reservaciones_salas` (`id_reservacion`, `fecha`, `inicio_hora_reservacion`, `fin_hora_reservacion`, `motivo`, `tipo_reservacion`, `id_usuario`, `id_sala`, `posgrado`, `licenciatura`, `unidad_aprendizaje`) VALUES
-('RS001', '2024-10-01', '09:00:00', '11:00:00', 'Seminario de tesis', 1, '20222198', '1', '2', '1', 'UA001'),
-('RS002', '2024-10-02', '10:00:00', '12:00:00', 'Clase especial', 0, '20222252', '2', '3', '2', 'UA002'),
-('RS003', '2024-10-03', '08:00:00', '10:00:00', 'Taller', 1, '20222781', '3', '1', '3', 'UA003'),
-('RS004', '2024-10-10', '11:00:00', '13:00:00', 'Examen parcial', 0, '20222791', '1', '2', '4', 'UA004'),
-('RS005', '2024-10-05', '07:00:00', '09:00:00', 'Reunión de grupo', 1, '29384018', '2', '1', '1', 'UA005'),
-('RS006', '2024-10-10', '09:30:00', '11:30:00', 'Investigación', 1, '20222198', '3', '2', '2', 'UA006'),
-('RS007', '2024-10-07', '13:00:00', '15:00:00', 'Conferencia', 0, '20222252', '1', '3', '3', 'UA007'),
-('RS008', '2024-10-08', '10:00:00', '12:00:00', 'Presentación', 1, '20222781', '2', '4', '4', 'UA008'),
-('RS009', '2024-10-10', '15:00:00', '17:00:00', 'Defensa de tesis', 1, '20222791', '3', '1', '1', 'UA009'),
-('RS010', '2024-10-20', '14:00:00', '16:00:00', 'Clase extra', 0, '29384018', '1', '2', '2', 'UA010');
+('RS001', '2025-10-13', '07:00:00', '09:00:00', 'sdfsa', 1, '20222111', '1', NULL, '2', 'UAIQ001'),
+('RS002', '2025-10-08', '07:00:00', '08:00:00', 'Pendejear', 1, '20222111', '2', NULL, '2', 'UAIQ001');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `respuestas_seguridad`
+--
+
+CREATE TABLE `respuestas_seguridad` (
+  `id` int(11) NOT NULL,
+  `usuario_id` varchar(50) NOT NULL,
+  `pregunta` text NOT NULL,
+  `respuesta` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `respuestas_seguridad`
+--
+
+INSERT INTO `respuestas_seguridad` (`id`, `usuario_id`, `pregunta`, `respuesta`) VALUES
+(1, '20262222', '¿Cuál era el nombre de tu primera mascota?', '$2b$10$y0iVfDRLrNOU2kDrPEyV6ewVfeNyULE9deCIDJ9yH/IhhMvEAv.Bu'),
+(2, '20262222', '¿Cuál es tu película favorita?', '$2b$10$AWoF0uX.nKxiHY7wBbhEPeRDKsfU8Q5G3bLAUwcFE9pIghwggS7vy'),
+(3, '20222198', '¿Cuál es tu comida favorita?', '$2b$10$2R6O.v6omTdbvbxE4qVRYuH0AAYiTj0D/Atc.jD4HZ7c2LZ.Pzlwu'),
+(4, '20222198', '¿Cuál fue tu primer auto?', '$2b$10$L76QIzHv1wVcwTzY16UqL.UiCoMOk3WxQ2UXZa7TboHK2EopSsDvy');
 
 -- --------------------------------------------------------
 
@@ -291,7 +207,7 @@ INSERT INTO `reservaciones_salas` (`id_reservacion`, `fecha`, `inicio_hora_reser
 CREATE TABLE `roles` (
   `idRol` char(1) NOT NULL,
   `nombre` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `roles`
@@ -313,7 +229,7 @@ CREATE TABLE `salas` (
   `id` char(3) NOT NULL,
   `nombre` varchar(45) DEFAULT NULL,
   `estado` tinyint(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `salas`
@@ -326,7 +242,51 @@ INSERT INTO `salas` (`id`, `nombre`, `estado`) VALUES
 
 -- --------------------------------------------------------
 
+--
+-- Estructura de tabla para la tabla `tipo_equipo`
+--
 
+CREATE TABLE `tipo_equipo` (
+  `id_tipo` int(8) NOT NULL,
+  `nombre` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_equipo`
+--
+
+INSERT INTO `tipo_equipo` (`id_tipo`, `nombre`) VALUES
+(1, 'Cañon'),
+(2, 'Bocina'),
+(3, 'Grabadora'),
+(4, 'Microfono'),
+(5, 'Mouse'),
+(6, 'Laptop'),
+(7, 'Extension'),
+(8, 'Cable de Corriente'),
+(9, 'Cable de Conexion');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_estado`
+--
+
+CREATE TABLE `tipo_estado` (
+  `id_estado` int(8) NOT NULL,
+  `nombre` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipo_estado`
+--
+
+INSERT INTO `tipo_estado` (`id_estado`, `nombre`) VALUES
+(1, 'Disponible'),
+(2, 'No Disponible'),
+(3, 'Prestado');
+
+-- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `unidades_aprendizaje`
@@ -334,24 +294,65 @@ INSERT INTO `salas` (`id`, `nombre`, `estado`) VALUES
 
 CREATE TABLE `unidades_aprendizaje` (
   `idunidad_aprendizaje` char(8) NOT NULL,
-  `nombre` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `nombre` varchar(100) DEFAULT NULL,
+  `licenciatura` char(8) DEFAULT NULL,
+  `posgrado` char(8) DEFAULT NULL,
+  `semestre` varchar(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `unidades_aprendizaje`
 --
 
-INSERT INTO `unidades_aprendizaje` (`idunidad_aprendizaje`, `nombre`) VALUES
-('UA001', 'Matemáticas Discretas'),
-('UA002', 'Programación Orientada a Objetos'),
-('UA003', 'Sistemas Operativos'),
-('UA004', 'Bases de Datos'),
-('UA005', 'Redes de Computadoras'),
-('UA006', 'Inteligencia Artificial'),
-('UA007', 'Ingeniería de Software'),
-('UA008', 'Seguridad Informática'),
-('UA009', 'Desarrollo Web'),
-('UA010', 'Arquitectura de Computadoras');
+INSERT INTO `unidades_aprendizaje` (`idunidad_aprendizaje`, `nombre`, `licenciatura`, `posgrado`, `semestre`) VALUES
+('UAIQ001', 'Álgebra Superior', '2', NULL, '1'),
+('UAIQ002', 'Cálculo Diferencial', '2', NULL, '1'),
+('UAIQ003', 'Epistemología y Metodología para las Ciencias Básicas', '2', NULL, '1'),
+('UAIQ004', 'Humanismo, Autorrealización y Sostenibilidad', '2', NULL, '1'),
+('UAIQ005', 'Química Inorgánica', '2', NULL, '1'),
+('UAIQ006', 'Química Orgánica', '2', NULL, '1'),
+('UAIQ007', 'Seminario de Integración de la Praxis Profesional 1', '2', NULL, '1'),
+('UAIQ008', 'Uso Profesional de la Información Digital', '2', NULL, '1'),
+('UAIQ009', 'Álgebra Lineal', '2', NULL, '2'),
+('UAIQ010', 'Cálculo Integral', '2', NULL, '2'),
+('UAIQ011', 'Comprensión de Textos Académicos en Inglés', '2', NULL, '2'),
+('UAIQ012', 'Física', '2', NULL, '2'),
+('UAIQ013', 'Formación Cívica y Democrática', '2', NULL, '2'),
+('UAIQ014', 'Innovación para el Futuro Profesional en Ciencias Básicas', '2', NULL, '2'),
+('UAIQ015', 'Seminario de Integración de la Praxis Profesional 2', '2', NULL, '2'),
+('UAIQ016', 'Termodinámica', '2', NULL, '2'),
+('UAIQ017', 'Balances de Materia y Energía', '2', NULL, '3'),
+('UAIQ018', 'Biosistemas', '2', NULL, '3'),
+('UAIQ019', 'Ecuaciones Diferenciales', '2', NULL, '3'),
+('UAIQ020', 'Electricidad y Magnetismo', '2', NULL, '3'),
+('UAIQ021', 'Fisicoquímica', '2', NULL, '3'),
+('UAIQ022', 'Química Analítica', '2', NULL, '3'),
+('UAIQ023', 'Seminario de Integración de la Praxis Profesional 3', '2', NULL, '3'),
+('UAIQ024', 'Equilibrio Termodinámico', '2', NULL, '4'),
+('UAIQ025', 'Fenómenos de Transporte', '2', NULL, '4'),
+('UAIQ026', 'Programación y Métodos Numéricos', '2', NULL, '4'),
+('UAIQ027', 'Seminario de Integración de la Praxis Profesional 4', '2', NULL, '4'),
+('UAIQ028', 'Sistemas de Manufactura', '2', NULL, '4'),
+('UAIQ029', 'Cinética y Catálisis', '2', NULL, '5'),
+('UAIQ030', 'Flujo de Fluidos', '2', NULL, '5'),
+('UAIQ031', 'Ingeniería de la Calidad', '2', NULL, '5'),
+('UAIQ032', 'Ingeniería para la Transferencia de Calor', '2', NULL, '5'),
+('UAIQ033', 'Operaciones Unitarias Básicas', '2', NULL, '5'),
+('UAIQ034', 'Seminario de Integración de la Praxis Profesional 5', '2', NULL, '5'),
+('UAIQ035', 'Gestión Estratégica', '2', NULL, '4'),
+('UAIQ036', 'Ingeniería de Reactores', '2', NULL, '4'),
+('UAIQ037', 'Seminario de Integración de la Praxis Profesional 6', '2', NULL, '5'),
+('UAIQ038', 'Separaciones Basadas en el Equilibrio', '2', NULL, '5'),
+('UAIQ039', 'Dinámica y Control de Procesos', '2', NULL, '6'),
+('UAIQ040', 'Ingeniería Económica', '2', NULL, '6'),
+('UAIQ041', 'Seminario de Integración de la Praxis Profesional 7', '2', NULL, '6'),
+('UAIQ042', 'Separaciones Basadas en Transferencia de Masa', '2', NULL, '6'),
+('UAIQ043', 'Seminario de Integración de la Praxis Profesional 8', '2', NULL, '7'),
+('UAIQ044', 'Síntesis de Procesos', '2', NULL, '7'),
+('UAIQ045', 'Ingeniería de Proyectos', '2', NULL, '7'),
+('UAIQ046', 'Prácticas Profesionales', '2', NULL, '7'),
+('UAIQ047', 'Seminario de Integración de la Praxis Profesional 9', '2', NULL, '7'),
+('UAIQ048', 'Probabilidad y Estadística', '2', NULL, '4');
 
 -- --------------------------------------------------------
 
@@ -365,34 +366,28 @@ CREATE TABLE `usuarios` (
   `apellido_paterno` varchar(30) NOT NULL,
   `apellido_materno` varchar(30) NOT NULL,
   `correo` varchar(50) NOT NULL,
-  `contrasena` varchar(45) NOT NULL,
+  `contrasena` varchar(200) NOT NULL,
   `semestre` tinyint(2) NOT NULL,
   `rol` char(1) NOT NULL,
   `licenciatura` char(8) DEFAULT NULL,
-  `posgrado` char(8) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `posgrado` char(8) DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido_paterno`, `apellido_materno`, `correo`, `contrasena`, `semestre`, `rol`, `licenciatura`, `posgrado`) VALUES
-('20222198', 'Jesús', 'Trujillo', 'Espinosa', 'mr.iikttx@gmail.com', 'hola1234', 5, '3', '1', NULL),
-('20222252', 'Joacim', 'Cuahutle', 'Caderon', 'yosh1@gmail.com', 'JoacimCC', 5, '3', '1', NULL),
-('20222781', 'Uriel', 'Hernández', 'Vélez', 'Uriel04@gmail.com', 'Urielwazaaaaaaa', 5, '3', '1', NULL),
-('20222791', 'Gerardo', 'Sánchez', 'Rámos', 'Levi_chiquito@gmail.com', 'levichiquitito', 5, '3', '1', NULL),
-('29384018', 'Patricia', 'Xelhuantzi', 'Trejo', 'pati@gmail.com', 'hola1234', 5, '1', '3', NULL);
+INSERT INTO `usuarios` (`id`, `nombre`, `apellido_paterno`, `apellido_materno`, `correo`, `contrasena`, `semestre`, `rol`, `licenciatura`, `posgrado`, `foto`) VALUES
+('20222111', 'Uriel', 'Hernández', 'Vélez', 'uriel@gmail.com', '$2b$10$KofdLju64eeaOwFP40NLWOoeLI3yej83V598FBEG7d8sA0oTmFSEi', 2, '2', '2', NULL, '1759782257587-839508470.png'),
+('20222121', 'Gerardo', 'Sánchez', 'Ramos', 'levi_chiquito@gmail.com', '$2b$10$NzOVxW/ncT2Q4GLY1SWluuJ2sgBAH0wVti6tLOcA3ghetAV61F65W', 3, '3', '1', '6', NULL),
+('20222198', 'Jesús', 'Trujillo', 'Espinosa', 'mr.iikttx@gmail.com', '$2b$10$F.GEjGbCQdvTcyTlm8nwuOln5zdxYGAXJ4B1x13JVMCDZMBsc2dmG', 1, '3', '2', '6', '1759895040113-483832492.jpg'),
+('20222222', 'Joacim', 'Cuahutle', 'Calderon', 'joacim@gmail.com', '$2b$10$IQUdfU9kUix/MO6rH26VCu8C7XMqXOE//lfqSAzDBp5KwJl.z//c6', 1, '1', '6', '6', '1759776239422-486190467.jpg'),
+('20262222', 'tilin', 'tilin', 'pilin', 'pinlin@gmail.com', '$2b$10$Otu3p/bQengq0cbqd1WloOkWQhU0UICb7EHK1AzG3UDwfDVLcRFRe', 1, '3', '2', NULL, NULL);
 
 --
 -- Índices para tablas volcadas
 --
-
---
--- Indices de la tabla `huellas_usuario`
---
-ALTER TABLE `huellas_usuario`
-  ADD PRIMARY KEY (`id_huella`),
-  ADD KEY `fk_Huellas_usuario_Usuarios1_idx` (`Usuarios_id`);
 
 --
 -- Indices de la tabla `ingreso_salas`
@@ -407,37 +402,30 @@ ALTER TABLE `ingreso_salas`
 --
 ALTER TABLE `inventarios`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_Inventarios_Usuarios1_idx` (`Usuarios_id`),
-  ADD KEY `fk_Inventarios_tipo_idx`(`tipo`);
+  ADD KEY `fk_tipo_equipo` (`tipo`),
+  ADD KEY `fk_Inventarios_tipo_estado1` (`id_disponible`);
 
 --
 -- Indices de la tabla `licenciaturas`
 --
 ALTER TABLE `licenciaturas`
-  ADD PRIMARY KEY (`idlicenciatura`);
-
---
--- Indices de la tabla `permisos`
---
-ALTER TABLE `permisos`
-  ADD PRIMARY KEY (`idPermiso`),
-  ADD KEY `fk_Permisos_Roles1_idx` (`Roles_idRol`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `posgrados`
 --
 ALTER TABLE `posgrados`
-  ADD PRIMARY KEY (`idposgrado`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
   ADD PRIMARY KEY (`idPrestamo`),
-  ADD KEY `fk_idusuario_prestamosidx` (`id_usuario`),
-  ADD KEY `fk_Prestamos_Inventarios1_idx` (`Inventarios_id`),
-  ADD KEY `fk_Prestamos_licenciaturas1_idx` (`licenciatura`),
-  ADD KEY `fk_Prestamos_posgrados1_idx` (`posgrado`);
+  ADD KEY `fk_idusuario_idx` (`id_usuario`),
+  ADD KEY `fk_Prestamos_Inventarios1` (`inventarios_id`),
+  ADD KEY `fk_Prestamos_licenciaturas1` (`licenciatura`),
+  ADD KEY `fk_Prestamos_posgrados1` (`posgrado`);
 
 --
 -- Indices de la tabla `reservaciones_salas`
@@ -449,6 +437,13 @@ ALTER TABLE `reservaciones_salas`
   ADD KEY `fk_reservaciones_salas_posgrados1_idx` (`posgrado`),
   ADD KEY `fk_reservaciones_salas_licenciaturas1_idx` (`licenciatura`),
   ADD KEY `fk_reservaciones_salas_unidades_aprendizaje1_idx` (`unidad_aprendizaje`);
+
+--
+-- Indices de la tabla `respuestas_seguridad`
+--
+ALTER TABLE `respuestas_seguridad`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `usuario_id` (`usuario_id`);
 
 --
 -- Indices de la tabla `roles`
@@ -469,10 +464,18 @@ ALTER TABLE `tipo_equipo`
   ADD PRIMARY KEY (`id_tipo`);
 
 --
+-- Indices de la tabla `tipo_estado`
+--
+ALTER TABLE `tipo_estado`
+  ADD PRIMARY KEY (`id_estado`);
+
+--
 -- Indices de la tabla `unidades_aprendizaje`
 --
 ALTER TABLE `unidades_aprendizaje`
-  ADD PRIMARY KEY (`idunidad_aprendizaje`);
+  ADD PRIMARY KEY (`idunidad_aprendizaje`),
+  ADD KEY `fk_unidad_licenciatura` (`licenciatura`),
+  ADD KEY `fk_unidad_posgrado` (`posgrado`);
 
 --
 -- Indices de la tabla `usuarios`
@@ -485,14 +488,42 @@ ALTER TABLE `usuarios`
   ADD KEY `fk_Usuarios_posgrados1_idx` (`posgrado`);
 
 --
--- Restricciones para tablas volcadas
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- Filtros para la tabla `huellas_usuario`
+-- AUTO_INCREMENT de la tabla `inventarios`
 --
-ALTER TABLE `huellas_usuario`
-  ADD CONSTRAINT `fk_Huellas_usuario_Usuarios1` FOREIGN KEY (`Usuarios_id`) REFERENCES `usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE `inventarios`
+  MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `prestamos`
+--
+ALTER TABLE `prestamos`
+  MODIFY `idPrestamo` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63511;
+
+--
+-- AUTO_INCREMENT de la tabla `respuestas_seguridad`
+--
+ALTER TABLE `respuestas_seguridad`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_equipo`
+--
+ALTER TABLE `tipo_equipo`
+  MODIFY `id_tipo` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `tipo_estado`
+--
+ALTER TABLE `tipo_estado`
+  MODIFY `id_estado` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Restricciones para tablas volcadas
+--
 
 --
 -- Filtros para la tabla `ingreso_salas`
@@ -505,23 +536,17 @@ ALTER TABLE `ingreso_salas`
 -- Filtros para la tabla `inventarios`
 --
 ALTER TABLE `inventarios`
-  ADD CONSTRAINT `fk_Inventarios_Usuarios1` FOREIGN KEY (`Usuarios_id`) REFERENCES `usuarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Inventarios_tipo` FOREIGN KEY (`tipo`) REFERENCES `tipo_equipo` (`id_tipo`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `permisos`
---
-ALTER TABLE `permisos`
-  ADD CONSTRAINT `fk_Permisos_Roles1` FOREIGN KEY (`Roles_idRol`) REFERENCES `roles` (`idRol`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Inventarios_tipo_estado1` FOREIGN KEY (`id_disponible`) REFERENCES `tipo_estado` (`id_estado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_tipo_equipo` FOREIGN KEY (`tipo`) REFERENCES `tipo_equipo` (`id_tipo`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `prestamos`
 --
 ALTER TABLE `prestamos`
-  ADD CONSTRAINT `fk_Prestamos_Inventarios1` FOREIGN KEY (`Inventarios_id`) REFERENCES `inventarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Prestamos_licenciaturas1` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`idlicenciatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Prestamos_posgrados1` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`idposgrado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_idusuario_prestamos` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_Prestamos_Inventarios1` FOREIGN KEY (`inventarios_id`) REFERENCES `inventarios` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Prestamos_licenciaturas1` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Prestamos_posgrados1` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_idusuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `reservaciones_salas`
@@ -529,17 +554,30 @@ ALTER TABLE `prestamos`
 ALTER TABLE `reservaciones_salas`
   ADD CONSTRAINT `fk_idusuario_reservacion` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_reservacion_sala_Sala1` FOREIGN KEY (`id_sala`) REFERENCES `salas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_reservaciones_salas_licenciaturas1` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`idlicenciatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_reservaciones_salas_posgrados1` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`idposgrado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_reservaciones_salas_licenciaturas1` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_reservaciones_salas_posgrados1` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_reservaciones_salas_unidades_aprendizaje1` FOREIGN KEY (`unidad_aprendizaje`) REFERENCES `unidades_aprendizaje` (`idunidad_aprendizaje`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `respuestas_seguridad`
+--
+ALTER TABLE `respuestas_seguridad`
+  ADD CONSTRAINT `respuestas_seguridad_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `unidades_aprendizaje`
+--
+ALTER TABLE `unidades_aprendizaje`
+  ADD CONSTRAINT `fk_unidad_licenciatura` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_unidad_posgrado` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD CONSTRAINT `fk_Usuarios_Roles1` FOREIGN KEY (`rol`) REFERENCES `roles` (`idRol`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Usuarios_licenciaturas1` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`idlicenciatura`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Usuarios_posgrados1` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`idposgrado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_Usuarios_licenciaturas1` FOREIGN KEY (`licenciatura`) REFERENCES `licenciaturas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Usuarios_posgrados1` FOREIGN KEY (`posgrado`) REFERENCES `posgrados` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
