@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <title>Mi Perfil</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #d9e4f5, #f7faff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Centra verticalmente */
+      height: 100vh;
+      /* Ocupa toda la altura de la ventana */
+    }
+
+    .perfil-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      /* Centra contenido opcionalmente */
+    }
+
+    /* Oculta panel de contenido si no quieres scroll vertical */
+    .content {
+      width: 100%;
+    }
+
+    h1 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.3rem;
+      font-weight: 600;
+    }
+
+    input {
+      padding: 0.6rem;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    input[readonly] {
+      background: #f0f0f0;
+    }
+
+    .password-field {
+      letter-spacing: 0.3em;
+    }
+
+    .buttons {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .foto-perfil {
+      margin: 1rem 0 2rem;
+      text-align: center;
+    }
+
+    .foto-perfil img {
+      max-width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3px solid #007bff;
+      object-fit: cover;
+    }
+
+    #editar-form {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+  <div id="layout-placeholder" style="margin-top: 56px;"></div>
+
+  <div class="content mt-4 hidden" id="panel-contenido">
+    <main class="overflow-y-auto">
+      <div class="perfil-container">
+        <h1>Mi Perfil</h1>
+
+        <div class="foto-perfil">
+          <img id="imgPreview" src="/pages/default-profile.png" alt="Foto de perfil" />
+        </div>
+
+        <form id="perfilForm">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" readonly />
+
+          <label for="apellido_p">Apellido Paterno</label>
+          <input type="text" id="apellido_p" readonly />
+
+          <label for="apellido_m">Apellido Materno</label>
+          <input type="text" id="apellido_m" readonly />
+
+          <label for="correo">Correo</label>
+          <input type="email" id="correo" readonly />
+        </form>
+
+        <div class="buttons" id="mainButtons">
+          <button id="btnEditar">Editar foto</button>
+        </div>
+
+        <form id="editar-form" enctype="multipart/form-data">
+          <label for="foto-edit">Cargar nueva imagen</label>
+          <input type="file" id="foto-edit" name="foto" accept="image/*" required />
+
+          <div class="buttons">
+            <button type="submit">Guardar cambios</button>
+            <button type="button" id="btnCancelar">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+
+  <script>
+    // Cargar layout (navbar o sidebar)
+    fetch('/pages/layout.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('layout-placeholder').innerHTML = html;
+      });
+  </script>
+
+  <script>
+    let perfilData = {};
+
+    async function cargarPerfil() {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No hay token, inicia sesión.');
+
+        const res = await fetch('/api/usuarios/perfil', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('No autorizado o error al cargar perfil');
+
+        perfilData = await res.json();
+
+        document.getElementById('nombre').value = perfilData.nombre || '';
+        document.getElementById('apellido_p').value = perfilData.apellido_paterno || '';
+        document.getElementById('apellido_m').value = perfilData.apellido_materno || '';
+        document.getElementById('correo').value = perfilData.correo || '';
+        document.getElementById('imgPreview').src = perfilData.fotoUrl || '/pages/default-profile.png';
+      } catch (err) {
+        alert(err.message);
+        window.location.href = '/pages/login.html';
+      }
+    }
+
+    document.getElementById('btnEditar').addEventListener('click', () => {
+      document.getElementById('editar-form').style.display = 'block';
+      document.getElementById('mainButtons').style.display = 'none';
+    });
+
+    document.getElementById('btnCancelar').addEventListener('click', () => {
+      document.getElementById('editar-form').reset();
+      document.getElementById('editar-form').style.display = 'none';
+      document.getElementById('mainButtons').style.display = 'flex';
+    });
+
+    document.getElementById('editar-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const formData = new FormData(document.getElementById('editar-form'));
+      const token = localStorage.getItem('token');
+
+      try {
+        const res = await fetch('/api/usuarios/actualizar-perfil', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        if (!res.ok) throw new Error('Error al actualizar foto');
+
+        const data = await res.json();
+        perfilData = data;
+        document.getElementById('imgPreview').src = data.fotoUrl || '/pages/default-profile.png';
+        alert('Foto de perfil actualizada correctamente');
+
+        document.getElementById('editar-form').style.display = 'none';
+        document.getElementById('mainButtons').style.display = 'flex';
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    window.onload = cargarPerfil;
+  </script>
+</body>
+
+</html>

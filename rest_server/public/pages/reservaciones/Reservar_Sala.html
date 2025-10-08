@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reservar Sala</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding-top: 56px;
+      display: flex;
+      flex-direction: row;
+    }
+
+    #sidebar {
+      width: 250px;
+      height: calc(100vh - 56px);
+      position: fixed;
+      top: 56px;
+      left: 0;
+      background: #8c3031;
+      color: white;
+      padding-top: 1rem;
+      display: none;
+      overflow-y: auto;
+      z-index: 1030;
+    }
+
+    @media (min-width: 768px) {
+      #sidebar {
+        display: block;
+      }
+
+      #content {
+        margin-left: 250px;
+      }
+
+      #offcanvasToggle {
+        display: none;
+      }
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 1.5rem;
+      margin-left: 0;
+    }
+
+    @media (min-width: 768px) {
+      .content {
+        margin-left: 250px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 font-sans min-h-screen">
+  <div id="layout-placeholder"></div>
+
+  <div class="content container mt-4" id="content">
+    <main class="flex-1 w-full">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-6 border-b-2 border-red-600 pb-2">
+        Reservar Sala
+      </h1>
+
+      <form id="formReservacion" class="bg-white p-6 rounded shadow-md">
+
+        <!-- Campos del formulario -->
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Fecha</label>
+          <input type="date" name="fecha" required class="w-full border px-4 py-2 rounded" />
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Hora de inicio</label>
+          <select name="inicio" id="horaInicio" required class="w-full border px-4 py-2 rounded">
+            <!-- Opciones de 07:00 a 19:00 -->
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Hora de fin</label>
+          <select name="fin" id="horaFin" required class="w-full border px-4 py-2 rounded">
+            <!-- Opciones de 08:00 a 20:00 -->
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Motivo</label>
+          <textarea name="motivo" required class="w-full border px-4 py-2 rounded"></textarea>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Tipo de reservación</label>
+          <select name="tipoReservacion" required class="w-full border px-4 py-2 rounded">
+            <option value="1">Clase</option>
+            <option value="2">Reunión</option>
+            <option value="3">Otro</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Sala</label>
+          <select name="idSala" required class="w-full border px-4 py-2 rounded">
+            <option value="">Seleccione una sala</option>
+            <option value="1">Sala A</option>
+            <option value="2">Sala B</option>
+            <option value="3">Sala C</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Posgrado</label>
+          <select name="posgrado" id="posgrado-option" class="w-full border px-4 py-2 rounded">
+            <option value="">Seleccione un posgrado</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Licenciatura</label>
+          <select name="licenciatura" id="licenciatura-option" class="w-full border px-4 py-2 rounded">
+            <option value="">Seleccione una licenciatura</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Semestre</label>
+          <select name="semestre" id="semestre-option" class="w-full border px-4 py-2 rounded">
+            <option value="">Seleccione un semestre</option>
+            <option value="1">1°</option>
+            <option value="2">2°</option>
+            <option value="3">3°</option>
+            <option value="4">4°</option>
+            <option value="5">5°</option>
+            <option value="6">6°</option>
+            <option value="7">7°</option>
+            <option value="8">8°</option>
+            <option value="9">9°</option>
+            <option value="10">10°</option>
+          </select>
+        </div>
+
+        <div class="mb-6">
+          <label class="block font-medium mb-1">Unidad de aprendizaje</label>
+          <select name="unidadAprendizaje" id="unidadAprendizaje-option" required
+            class="w-full border px-4 py-2 rounded">
+            <option value="">Seleccione una Unidad de Aprendizaje</option>
+          </select>
+        </div>
+
+        <button type="submit" class="bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800">Reservar</button>
+        <p id="mensaje" class="mt-4 text-green-600 font-semibold hidden">Reservación registrada correctamente.</p>
+      </form>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    fetch('/pages/layout.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('layout-placeholder').innerHTML = html;
+      });
+    // Obtiene token guardado
+    const token = localStorage.getItem("token");
+
+    // Si no hay token → redirige al login
+    if (!token) {
+      window.location.href = "/pages/login.html";
+    }
+
+    // Antes de cualquier fetch protegido
+    function fetchConToken(url, options = {}) {
+      const headers = options.headers || {};
+      headers["Authorization"] = `Bearer ${token}`;
+      return fetch(url, { ...options, headers });
+    }
+
+    const selectPosgrado = document.getElementById("posgrado-option");
+    const selectLicenciatura = document.getElementById("licenciatura-option");
+    const selectSemestre = document.getElementById("semestre-option");
+    const selectUA = document.getElementById("unidadAprendizaje-option");
+
+    function cargarUAFiltradas(posgrado, licenciatura, semestre) {
+      const url = new URL("/api/reservaciones/obtenerUA-filtradas", window.location.origin);
+      if (posgrado) url.searchParams.append("posgrado", posgrado);
+      if (licenciatura) url.searchParams.append("licenciatura", licenciatura);
+      if (semestre) url.searchParams.append("semestre", semestre);
+
+      fetchConToken(url)
+        .then(res => res.json())
+        .then(data => {
+          selectUA.innerHTML = '<option value="">Seleccione una Unidad de Aprendizaje</option>';
+          data.forEach(ua => {
+            const option = document.createElement('option');
+            option.value = ua.idunidad_aprendizaje;
+            option.textContent = ua.nombre;
+            selectUA.appendChild(option);
+          });
+        })
+        .catch(err => {
+          console.error("Error al cargar unidades:", err);
+          selectUA.innerHTML = '<option value="">Error al cargar</option>';
+        });
+    }
+
+
+    selectPosgrado.addEventListener("change", () => {
+      if (selectPosgrado.value) {
+        selectLicenciatura.selectedIndex = 0;
+        const semestre = selectSemestre.value || null;
+        cargarUAFiltradas(selectPosgrado.value, null, semestre);
+      } else {
+        selectUA.innerHTML = '<option value="">Seleccione una Unidad de Aprendizaje</option>';
+      }
+    });
+
+    selectLicenciatura.addEventListener("change", () => {
+      if (selectLicenciatura.value) {
+        selectPosgrado.selectedIndex = 0;
+        const semestre = selectSemestre.value || null;
+        cargarUAFiltradas(null, selectLicenciatura.value, semestre);
+      } else {
+        selectUA.innerHTML = '<option value="">Seleccione una Unidad de Aprendizaje</option>';
+      }
+    });
+
+    selectSemestre.addEventListener("change", () => {
+      const semestre = selectSemestre.value;
+      if (selectPosgrado.value) {
+        cargarUAFiltradas(selectPosgrado.value, null, semestre);
+      } else if (selectLicenciatura.value) {
+        cargarUAFiltradas(null, selectLicenciatura.value, semestre);
+      }
+    });
+
+
+    // Carga inicial de opciones
+    fetchConToken('api/reservaciones/obtenerPosgrados')
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(pos => {
+          const option = document.createElement("option");
+          option.value = pos.id;
+          option.textContent = pos.nombre;
+          selectPosgrado.appendChild(option);
+        });
+      });
+
+    fetchConToken('api/reservaciones/obtenerLicenciaturas')
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(lic => {
+          const option = document.createElement("option");
+          option.value = lic.id;
+          option.textContent = lic.nombre;
+          selectLicenciatura.appendChild(option);
+        });
+      });
+
+    fetchConToken('api/log-usuarios/getUsuarios')
+      .then(res => res.json())
+      .then(data => {
+        const select = document.getElementById('usuario-option');
+        data.forEach(usuario => {
+          const option = document.createElement('option');
+          option.value = usuario.id;
+          option.textContent = `${usuario.id} (${usuario.nombre} ${usuario.apellido_paterno} ${usuario.apellido_materno})`;
+          select.appendChild(option);
+        });
+      });
+
+    const form = document.getElementById("formReservacion");
+    const mensaje = document.getElementById("mensaje");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const posgrado = formData.get("posgrado");
+      const licenciatura = formData.get("licenciatura");
+
+      if (!posgrado && !licenciatura) {
+        alert("Por favor selecciona un posgrado o una licenciatura.");
+        return;
+      }
+
+      const horaInicio = formData.get("inicio");
+      const horaFin = formData.get("fin");
+
+      const [hi] = horaInicio.split(":").map(Number);
+      const [hf] = horaFin.split(":").map(Number);
+      const duracion = hf - hi;
+
+      if (duracion <= 0) {
+        alert("La hora de fin debe ser posterior a la de inicio.");
+        return;
+      }
+
+      if (duracion > 2) {
+        alert("La reservación no puede durar más de 2 horas.");
+        return;
+      }
+
+      const data = {
+        fecha: formData.get("fecha"),
+        inicio: horaInicio,
+        fin: horaFin,
+        motivo: formData.get("motivo"),
+        tipoReservacion: formData.get("tipoReservacion"),
+        idSala: formData.get("idSala"),
+        posgrado,
+        licenciatura,
+        unidadAprendizaje: formData.get("unidadAprendizaje")
+      };
+
+      try {
+        const response = await fetchConToken("/api/reservaciones/reservarSala", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          mensaje.classList.remove("hidden");
+          form.reset();
+        } else {
+          const errorInfo = await response.json();
+          alert("Error al registrar: " + (errorInfo.error || "desconocido"));
+        }
+      } catch (error) {
+        alert("Ocurrió un error al enviar los datos.");
+        console.error("Error en la petición:", error);
+      }
+    });
+
+
+    const selectInicio = document.getElementById("horaInicio");
+    const selectFin = document.getElementById("horaFin");
+
+    function generarHorasCatalogo() {
+      for (let h = 7; h <= 19; h++) {
+        const hora = `${String(h).padStart(2, '0')}:00`;
+        selectInicio.innerHTML += `<option value="${hora}">${hora}</option>`;
+      }
+
+      for (let h = 8; h <= 20; h++) {
+        const hora = `${String(h).padStart(2, '0')}:00`;
+        selectFin.innerHTML += `<option value="${hora}">${hora}</option>`;
+      }
+    }
+
+    generarHorasCatalogo();
+
+  </script>
+</body>
+
+</html>

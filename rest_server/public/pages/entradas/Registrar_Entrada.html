@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Entrada</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+</head>
+
+<body class="bg-gray-100 font-sans">
+  <div id="layout-placeholder"></div>
+
+  <div class="content container mt-4" style="padding-left: 300px;">
+    <div class="flex h-screen overflow-hidden">
+      <!-- Contenido principal -->
+      <main class="flex-1 bg-white p-8 overflow-auto">
+        <header class="flex justify-between items-center mb-8 border-b pb-4 border-gray-300">
+          <h1 class="text-3xl font-bold text-red-700">Registro de Entrada</h1>
+        </header>
+
+        <section class="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200">
+          <form id="entradaForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Seleccionar Sala</label>
+              <select id="idSala" class="w-full mt-1 border rounded px-3 py-2" required>
+                <option value="">-- Selecciona una sala --</option>
+              </select>
+            </div>
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+              Registrar Entrada
+            </button>
+          </form>
+
+          <p id="mensaje" class="mt-4 text-green-600 font-semibold"></p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    crossorigin="anonymous"></script>
+
+  <!-- Layout -->
+  <script>
+    fetch('pages/layout.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('layout-placeholder').innerHTML = html;
+      });
+  </script>
+
+  <script>
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "/pages/login.html";
+    }
+
+    // Función para decodificar JWT
+    function parseJwt(token) {
+      try {
+        return JSON.parse(atob(token.split('.')[1]));
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Fetch con token
+    function fetchConToken(url, options = {}) {
+      const headers = options.headers || {};
+      headers["Authorization"] = `Bearer ${token}`;
+      return fetch(url, { ...options, headers });
+    }
+
+    // Llenar select de salas automáticamente
+    fetchConToken('/api/entradasalidas/getSalas') // GET por defecto
+      .then(res => {
+        if (!res.ok) throw new Error("Error al obtener salas");
+        return res.json();
+      })
+      .then(data => {
+        const select = document.getElementById('idSala');
+        data.forEach(sala => {
+          const option = document.createElement('option');
+          option.value = sala.id;
+          option.textContent = `${sala.nombre || sala.id}`;
+          select.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error("Error al cargar salas:", err);
+        document.getElementById('mensaje').textContent = 'No se pudieron cargar las salas.';
+        document.getElementById('mensaje').classList.remove('text-green-600');
+        document.getElementById('mensaje').classList.add('text-red-600');
+      });
+
+    // Enviar formulario
+    document.getElementById('entradaForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const idSala = document.getElementById('idSala').value;
+      if (!idSala) return;
+
+      const payload = parseJwt(token);
+      if (!payload || !payload.id) {
+        alert("Token inválido, inicia sesión de nuevo.");
+        return window.location.href = "/pages/login.html";
+      }
+      const usuariosId = payload.id;
+
+      fetchConToken('/api/entradasalidas/registrarEntrada', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idSala, usuariosId })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) throw new Error(data.error);
+          document.getElementById('mensaje').textContent = 'Entrada registrada correctamente.';
+          document.getElementById('mensaje').classList.remove('text-red-600');
+          document.getElementById('mensaje').classList.add('text-green-600');
+          document.getElementById('entradaForm').reset();
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('mensaje').textContent = 'Error al registrar entrada: ' + err.message;
+          document.getElementById('mensaje').classList.remove('text-green-600');
+          document.getElementById('mensaje').classList.add('text-red-600');
+        });
+    });
+  </script>
+
+</body>
+</html>

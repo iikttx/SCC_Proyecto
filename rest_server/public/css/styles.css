@@ -1,0 +1,82 @@
+
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding-top: 56px;
+  display: flex;
+  flex-direction: row;
+}
+
+#sidebar {
+  width: 250px;
+  height: calc(100vh - 56px);
+  position: fixed;
+  top: 56px;
+  left: 0;
+  background: #8c3031;
+  color: white;
+  padding-top: 1rem;
+  display: none;
+  overflow-y: auto;
+  z-index: 1030;
+  -ms-overflow-style: none;  /* IE y Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+/* En tu CSS */
+#sidbar::-webkit-scrollbar {
+  display: none;
+}
+
+#sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  display: block;
+}
+
+#sidebar a:hover {
+  background: #a94442;
+  color: white;
+}
+
+#sidebar legend {
+  padding: 0.75rem 1rem;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: white;
+}
+
+@media (min-width: 768px) {
+  #sidebar {
+    display: block;
+  }
+
+  #content {
+    margin-left: 250px;
+  }
+
+  #offcanvasToggle {
+    display: none;
+  }
+}
+
+.content {
+  flex-grow: 1;
+  padding: 1.5rem;
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  .content {
+    margin-left: 250px;
+  }
+}
+
+.bg-dark {
+  background-color: #8c3031 !important;
+}
+
+.bg-light {
+  background-color: #8c3031 !important;
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body class=" font-sans">
+  <div id="layout-placeholder"></div>
+
+  <div class="content container mt-4">
+
+  <div class="flex h-screen">
+    <!-- Contenido principal -->
+    <main class="flex-1  overflow-auto">
+      <header class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold">Registrar Huellas</h1>
+        <div class="flex items-center space-x-2">
+          <img src="Fotito.jpg" alt="Foto de perfil" width="40" height="40">
+        </div>
+      </header>
+
+      <!-- Formulario de registro de huella -->
+      <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-xl mx-auto">
+        <div class="mb-4">
+          <label for="nombre" class="block font-medium text-gray-700 mb-1">Nombre del usuario</label>
+          <input type="text" id="nombre"
+            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+            placeholder="Ej. Oscar Ahuatzi" />
+        </div>
+
+        <!-- Campo de ID Usuario -->
+        <div class="mb-4">
+          <label for="id_usuario" class="block font-medium text-gray-700 mb-1">ID Usuario</label>
+          <input type="text" id="id_usuario"
+            class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+            placeholder="Ingresa tu ID" required />
+        </div>
+
+        <div class="mb-4">
+          <label class="block font-medium text-gray-700 mb-2">Escanear Huella</label>
+          <div
+            class="flex justify-center items-center h-40 border-2 border-dashed border-red-400 rounded bg-gray-50 text-gray-500">
+            <span>Coloca el dedo en el lector</span>
+          </div>
+        </div>
+
+        <button id="boton-llamar-api" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
+          onclick="enviarDatos()">Registrar Huella</button>
+        <div id="respuesta-api" class="mt-4 text-sm text-gray-700"></div>
+          </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <!-- Layout -->
+  <script>
+    fetch('pages/layout.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('layout-placeholder').innerHTML = html;
+      });
+  </script>
+        <script>
+          function generarIdHuella() {
+            const random = Math.floor(Math.random() * 1000); // 0 a 999
+            return 'HU' + random.toString().padStart(3, '0'); // HU001, HU031, etc.
+          }
+
+          function enviarDatos() {
+            const nombreIn = document.getElementById('nombre').value;
+            const usuariosId = document.getElementById('id_usuario').value;
+            const idHuellaGenerado = generarIdHuella();
+
+            const datos = {
+              idHuella: idHuellaGenerado, // acá mandas el id generado
+              nombreHuella: nombreIn,
+              usuariosId: usuariosId
+            };
+
+            fetch('/api/huellas/registerHuellasUsuario', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(datos)
+            })
+              .then(response => {
+                if (!response.ok) throw new Error('Error al registrar');
+                return response.json();
+              })
+              .then(data => {
+                alert('Huella registrada con ID: ' + idHuellaGenerado);
+              })
+              .catch(error => {
+                console.error(error);
+                alert('Error al registrar la huella');
+              });
+          }
+
+
+        </script>
+
+      </div>
+    </main>
+  </div>
+  <script src="/js/jwt.js"></script>
+</body>
+
+</html>

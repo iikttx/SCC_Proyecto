@@ -1,0 +1,55 @@
+<!-- layout.html -->
+<!-- Solo navbar, sidebar y sidebar offcanvas -->
+ <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+<nav class="navbar navbar-light fixed-top" style="background-color: #8c3031;">
+  <div class="container-fluid" style="background-color: #8c3031;">
+    <button class="btn btn-outline-light d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar" id="offcanvasToggle">
+      ☰
+    </button>
+    <a class="navbar-brand ms-2" href="#" style="color: #ffffff;" >SCC</a>
+  </div>
+</nav>
+
+<nav id="sidebar" >
+  <h5 class="px-3">Menú</h5>
+  <legend>Gestión Usuario</legend>
+  <a href="/inicio" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-house"></i> Inicio</a>
+  <a href="/perfil" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-circle-user"></i> Perfil</a>
+  <legend>Admin. Reservaciones</legend>
+  <a href="/reservar" class="block px-6 py-2 hover:bg-red-600"></i><i class="fa-solid fa-book"></i> Reservar Sala</a>
+  <a href="/cancelar-reserva" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-book-skull"></i> Cancelar reservación</a>
+  <legend>Admin. Entradas</legend>
+  <a href="/visualizar" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-users"></i> Usuarios Registrados</a>
+  <a href="/generar-reportes" class="block px-6 py-2 hover:bg-red-600"> <i class="fa-solid fa-file"></i> Generar reportes</a>
+  <a href="/registrar-entrada" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-door-closed"></i> Registrar entrada</a>
+  <a href="/registrar-salida" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-door-open"></i> Registrar salida</a>
+  <a href="/registrar-huella" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-fingerprint"></i> Registrar Huellas</a>
+  <legend>Admin. Inventario</legend>
+  <a href="/disponibilidad" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-eye"></i></i> Disponibilidad del equipo</a>
+  <legend>Admin. Prestamos</legend>
+  <a href="/prestamo" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-landmark"></i> Prestamos</a>
+  <a href="/inventarios" class="block px-6 py-2 hover:bg-red-600"><i class="fa-solid fa-database"></i>Inventario</a>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Menú</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body p-0">
+    <nav class="nav flex-column">
+      <a class="nav-link px-3 py-2" href="/Inicio">Inicio</a>
+      <a class="nav-link px-3 py-2" href="/disponibilidad">Disponibilidad del equipo</a>
+      <a class="nav-link px-3 py-2" href="/reservar">Reservar Sala</a>
+      <a class="nav-link px-3 py-2" href="/cancelar-reserva">Cancelar reservación</a>
+      <a class="nav-link px-3 py-2" href="/visualizar">Visualizar datos</a>
+      <a class="nav-link px-3 py-2" href="/generar-reportes">Generar reportes</a>
+      <a class="nav-link px-3 py-2" href="/registrar-huella">Registrar Huellas</a>
+      <a class="nav-link px-3 py-2" href="/registrar-huella">Registrar Huellas</a>
+      <a class="nav-link px-3 py-2" href="/registrar-entrada">Registrar entrada</a>
+      <a class="nav-link px-3 py-2" href="/registrar-salida">Registrar salida</a>
+      <a class="nav-link px-3 py-2" href="/prestamo">Prestamos</a>
+      <a class="nav-link px-3 py-2" href="/inventarios">Inventario</a>
+    </nav>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <title>Iniciar sesión</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: linear-gradient(135deg, #8c3031, #6b6b83);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      margin-top: 1rem;
+      background-color: #8c3031;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #732526;
+    }
+    .link-text {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .link-text a {
+      color: #8c3031;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .link-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Iniciar sesión</h2>
+    <form id="form-login">
+      <input type="text" id="id" name="id" placeholder="ID o correo" required>
+      <input type="password" id="password" name="password" placeholder="Contraseña" required>
+      <button type="submit">Entrar</button>
+    </form>
+    <p class="link-text"><a href="/pages/recuperar.html">¿Olvidaste tu contraseña?</a></p>
+    <p class="link-text">¿No tienes cuenta? <a href="/pages/registro.html">Regístrate</a></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("form-login");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById("id").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        const res = await fetch("/api/usuarios/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, password }),
+        });
+
+        const data = await res.json();
+        console.log("🔐 Respuesta del login:", data);
+
+        if (res.ok && data.token) {
+          // Guardar el token JWT
+          localStorage.setItem("token", data.token);
+          // Redirigir a la página principal
+          window.location.href = "/pages/inicio.html";
+        } else {
+          alert(data.error || data.message || "Credenciales incorrectas");
+        }
+      } catch (error) {
+        console.error("❌ Error durante el login:", error);
+        alert("Error al conectar con el servidor.");
+      }
+    });
+  </script>
+</body>
+</html>

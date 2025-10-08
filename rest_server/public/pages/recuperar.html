@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar con Preguntas</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #8c3031, #6b6b83);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            color: #555;
+        }
+
+        p {
+            text-align: center;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.9rem;
+            margin-top: 1rem;
+            background-color: #8c3031;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #732526;
+        }
+
+        .link-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .link-text a {
+            color: #8c3031;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .link-text a:hover {
+            text-decoration: underline;
+        }
+
+        #mensajeError {
+            color: red;
+            text-align: center;
+            margin-top: 1rem;
+            min-height: 1.2em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Recuperar Contraseña</h2>
+
+    <div id="paso1">
+        <p>Ingresa tu ID de usuario para comenzar.</p>
+        <input type="text" id="idUsuario" placeholder="ID de Usuario" required>
+        <button onclick="obtenerPreguntas()">Siguiente</button>
+    </div>
+
+    <div id="paso2" style="display: none;">
+        <form id="formRecuperacion">
+            <input type="hidden" id="idUsuarioOculto" name="id">
+            
+            <h4>Responde a tus preguntas de seguridad</h4>
+            <div id="contenedorPreguntas"></div> 
+            
+            <h4>Establece tu nueva contraseña</h4>
+            <input type="password" name="password" placeholder="Nueva contraseña" required>
+            <button type="submit">Cambiar Contraseña</button>
+        </form>
+    </div>
+    
+    <p id="mensajeError"></p>
+
+    <p class="link-text"><a href="/">Volver a inicio de sesión</a></p>
+</div>
+
+<script>
+    async function obtenerPreguntas() {
+        const id = document.getElementById('idUsuario').value;
+        const mensajeError = document.getElementById('mensajeError');
+        mensajeError.textContent = '';
+
+        if (!id) {
+            mensajeError.textContent = 'El ID es requerido.';
+            return;
+        }
+
+        const response = await fetch('/api/usuarios/obtener-preguntas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+
+        if (!response.ok) {
+            mensajeError.textContent = 'Usuario no encontrado o sin preguntas de seguridad.';
+            return;
+        }
+
+        const data = await response.json();
+        
+        document.getElementById('idUsuarioOculto').value = id;
+        const contenedor = document.getElementById('contenedorPreguntas');
+        contenedor.innerHTML = '';
+        data.preguntas.forEach((pregunta, index) => {
+            contenedor.innerHTML += `
+                <label>${pregunta}</label>
+                <input type="text" name="respuesta${index + 1}" required autocomplete="off">
+            `;
+        });
+
+        document.getElementById('paso1').style.display = 'none';
+        document.getElementById('paso2').style.display = 'block';
+    }
+
+    // --- CÓDIGO NUEVO PARA MANEJAR EL ENVÍO DEL FORMULARIO ---
+    document.getElementById('formRecuperacion').addEventListener('submit', async function(event) {
+        // 1. Prevenir el envío tradicional del formulario
+        event.preventDefault();
+
+        // 2. Recolectar los datos del formulario
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+
+        // 3. Enviar los datos al servidor con fetch
+        const response = await fetch('/api/usuarios/resetear-con-preguntas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        // 4. Manejar la respuesta del servidor
+        if (response.ok) {
+            // Si todo salió bien
+            alert('¡Contraseña cambiada con éxito!');
+            window.location.href = '/'; // Redirigir al login
+        } else {
+            // Si hubo un error (ej. respuestas incorrectas)
+            const errorMessage = await response.text();
+            alert(`Error: ${errorMessage}`);
+        }
+    });
+</script>
+</body>
+</html>

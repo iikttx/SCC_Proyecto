@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Restablecer Contraseña</title>
+    <link rel="stylesheet" href="/css/style.css"> </head>
+<body>
+  <div class="container">
+    <h2>Restablecer Contraseña</h2>
+    <form action="/api/usuarios/reset" method="POST">
+      <input type="hidden" id="token" name="token" value="">
+      <input type="password" name="password" placeholder="Nueva contraseña" required>
+      <input type="password" name="confirmPassword" placeholder="Confirmar contraseña" required>
+      <button type="submit">Guardar Contraseña</button>
+    </form>
+  </div>
+
+  <script>
+    // Obtenemos el token de la URL y lo ponemos en el campo oculto
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      if (token) {
+        document.getElementById('token').value = token;
+      } else {
+        // Si no hay token, redirigir o mostrar error
+        document.body.innerHTML = '<h1>Token inválido o faltante.</h1>';
+      }
+    });
+  </script>
+</body>
+</html>

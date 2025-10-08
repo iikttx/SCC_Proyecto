@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/fb26bea93f.js" crossorigin="anonymous"></script>
+  <title>Registro</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #8c3031, #6b6b83);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      padding: 2.5rem 2rem;
+      margin: 2rem 0;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+
+    h4 {
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      color: #555;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      margin-top: 1rem;
+      background-color: #8c3031;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #732526;
+    }
+
+    .link-text {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .link-text a {
+      color: #8c3031;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .link-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Registro</h2>
+    <form id="registro-form">
+      <input type="text" name="id" placeholder="ID de usuario" required>
+      <input type="text" name="nombre" placeholder="Nombre" required>
+      <input type="text" name="apellido_paterno" placeholder="Apellido Paterno" required>
+      <input type="text" name="apellido_materno" placeholder="Apellido Materno" required>
+      <input type="email" name="correo" placeholder="Correo" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <input type="number" name="semestre" placeholder="Semestre" min="1" max="12" required>
+
+      <select name="licenciatura">
+        <option value="">-- Selecciona una licenciatura (opcional) --</option>
+        <option value="1">Ing. en Computación</option>
+        <option value="2">Ing. Química</option>
+        <option value="3">Ing. en Química Industrial</option>
+        <option value="4">Ing. en Sistemas Electrónicos</option>
+        <option value="5">Ing. Mecánica</option>
+        <option value="6">Lic. en Inteligencia Artificial</option>
+        <option value="7">Lic. en Matemáticas Aplicadas</option>
+      </select>
+
+      <select name="posgrado">
+        <option value="">-- Selecciona un posgrado (opcional) --</option>
+        <option value="1">Doctorado en Ciencias en Ingeniería Química</option>
+        <option value="2">Doctorado en Sistemas Computacionales y Electrónicos</option>
+        <option value="3">Maestría en Ciencias de la Calidad</option>
+        <option value="4">Maestría en Ciencias en Ingeniería Química</option>
+        <option value="5">Maestría en Ciencias en Sistemas Computacionales</option>
+        <option value="6">Maestría en Ingeniería de Software</option>
+        <option value="7">Maestría en Uso y Gestión de las Tecnologías de la Información</option>
+      </select>
+
+      <select name="rol" required>
+        <option value="">Selecciona un rol</option>
+        <option value="1">Alumno</option>
+        <option value="2">Docente</option>
+        <option value="3">Administrador</option>
+      </select>
+
+      <h4>Preguntas de Seguridad</h4>
+
+      <select name="pregunta1" required>
+        <option value="" disabled selected>Elige tu primera pregunta</option>
+        <option value="¿Cuál era el nombre de tu primera mascota?">¿Cuál era el nombre de tu primera mascota?</option>
+        <option value="¿Cuál es tu comida favorita?">¿Cuál es tu comida favorita?</option>
+        <option value="¿En qué ciudad naciste?">¿En qué ciudad naciste?</option>
+      </select>
+      <input type="text" name="respuesta1" placeholder="Respuesta a la primera pregunta" required>
+
+      <select name="pregunta2" required>
+        <option value="" disabled selected>Elige tu segunda pregunta</option>
+        <option value="¿Cuál fue tu primer auto?">¿Cuál fue tu primer auto?</option>
+        <option value="¿Cuál es el nombre de tu abuelo materno?">¿Cuál es el nombre de tu abuelo materno?</option>
+        <option value="¿Cuál es tu película favorita?">¿Cuál es tu película favorita?</option>
+      </select>
+      <input type="text" name="respuesta2" placeholder="Respuesta a la segunda pregunta" required>
+
+      <button type="submit">Registrarse</button>
+    </form>
+
+    <p class="link-text">¿Ya tienes cuenta? <a href="/pages/login.html">Iniciar sesión</a></p>
+  </div>
+
+  <script>
+    const form = document.getElementById("registro-form");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch("/api/usuarios/registro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          alert("✅ Registro exitoso. Ahora puedes iniciar sesión.");
+          window.location.href = "/pages/login.html";
+        } else {
+          const errorData = await res.json();
+          alert("❌ " + (errorData.error || "Error al registrar usuario."));
+        }
+      } catch (err) {
+        console.error("Error al registrar:", err);
+        alert("Error al conectar con el servidor.");
+      }
+    });
+  </script>
+</body>
+</html>
