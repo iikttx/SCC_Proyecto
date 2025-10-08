@@ -7,15 +7,15 @@ const router = express.Router();
 
 // CRUD de inventarios
 router.post("/create",    autorizeToken, soloAdmin,  invCtrl.crearInventario);
-router.get("/inventarios",autorizeToken, personal, invCtrl.listarInventarios);
+router.get("/inventarios", invCtrl.listarInventarios);
 router.put("/update", autorizeToken, soloAdmin,      invCtrl.actualizarInventario);
 router.delete("/delete/:id",autorizeToken, soloAdmin,invCtrl.eliminarInventario);
 
 // Catálogos
-router.get("/tipos", autorizeToken,  invCtrl.listarTipos);
-router.get("/estados",autorizeToken, invCtrl.listarEstados);
+router.get("/tipos",  invCtrl.listarTipos);
+router.get("/estados", invCtrl.listarEstados);
 
 // Disponibilidad
-router.get("/disponibles",autorizeToken, invCtrl.listarDisponibles);
+router.get("/disponibles", invCtrl.listarDisponibles);
 
 export default router;

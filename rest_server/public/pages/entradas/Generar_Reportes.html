@@ -90,65 +90,73 @@
 
   <!-- Script de descarga del reporte -->
   <script>
-    const token = localStorage.getItem("token");
+    document.addEventListener("DOMContentLoaded", () => {
+  const token = localStorage.getItem("token"); // ⚠ token declarado primero
 
-    // Si no hay token → redirige al login
-    if (!token) {
-      window.location.href = "/pages/inicio.html";
-    }else {
-    // Decodificar el token para obtener el rol
-    function parseJwt(token) {
-      try {
-        return JSON.parse(atob(token.split('.')[1]));
-      } catch (e) {
-        return null;
-      }
-    }
-
-    const payload = parseJwt(token);
-    if (!payload || payload.rol !== "admin") {
-      alert("Solo los administradores pueden generar reportes.");
-      window.location.href = "/pages/inicio.html"; // O a otra página
-    }
+  if (!token) {
+    window.location.href = "/pages/inicio.html";
+    return;
   }
 
-    // Antes de cualquier fetch protegido
-    function fetchConToken(url, options = {}) {
-      const headers = options.headers || {};
-      headers["Authorization"] = `Bearer ${token}`;
-      return fetch(url, { ...options, headers });
-    }
-    document.getElementById("descargar-reporte").addEventListener("click", () => {
-      const mensaje = document.getElementById("mensaje");
-      mensaje.classList.remove("hidden");
-      mensaje.textContent = "Generando reporte...";
+  // ✅ Función que recibe token como argumento
+  function fetchConToken(url, options = {}) {
+    const headers = options.headers ? { ...options.headers } : {};
+    headers["Authorization"] = `Bearer ${token}`;
+    headers["Content-Type"] = "application/json";
+    return fetch(url, { ...options, headers });
+  }
 
-      fetchConToken("/api/entradasalidas/genReporte")
-        .then(response => {
-          if (!response.ok) throw new Error("Error al descargar el reporte");
-          return response.blob();
-        })
-        .then(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "reporte_ingresos.pdf";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          mensaje.textContent = "Reporte descargado correctamente.";
-          mensaje.classList.remove("text-red-600");
-          mensaje.classList.add("text-green-700");
-        })
-        .catch(err => {
-          console.error(err);
-          mensaje.textContent = "Ocurrió un error al generar el reporte.";
-          mensaje.classList.remove("text-green-700");
-          mensaje.classList.add("text-red-600");
-        });
+  // Verificar token y rol
+  fetchConToken("/api/log-usuarios/verify")
+    .then(res => {
+      if (!res.ok) throw new Error("Token inválido");
+      return res.json();
+    })
+    .then(data => {
+      if (data.rol !== "1") {
+        alert("Acceso restringido. Solo administradores pueden generar reportes.");
+        window.location.href = "/pages/inicio.html";
+        return;
+      }
+
+      // Listener del botón solo después de verificar rol
+      const botonReporte = document.getElementById("descargar-reporte");
+      botonReporte.addEventListener("click", () => {
+        const mensaje = document.getElementById("mensaje");
+        mensaje.classList.remove("hidden");
+        mensaje.textContent = "Generando reporte...";
+
+        fetchConToken("/api/entradasalidas/genReporte")
+          .then(res => {
+            if (!res.ok) throw new Error("Error al descargar el reporte");
+            return res.blob();
+          })
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "reporte_ingresos.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            mensaje.textContent = "Reporte descargado correctamente.";
+            mensaje.classList.remove("text-red-600");
+            mensaje.classList.add("text-green-700");
+          })
+          .catch(err => {
+            console.error(err);
+            mensaje.textContent = "Ocurrió un error al generar el reporte.";
+            mensaje.classList.remove("text-green-700");
+            mensaje.classList.add("text-red-600");
+          });
+      });
+    })
+    .catch(err => {
+      console.error("Error verificando token:", err);
+      window.location.href = "/pages/inicio.html";
     });
+});
   </script>
-  <script src="/js/jwt.js"></script>
 </body>
 
 </html>

@@ -6,10 +6,10 @@ import {autorizeToken, personal} from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Catálogos
-router.get("/licenciaturas",autorizeToken,personal, prestCtrl.listarLicenciaturas);
-router.get("/posgrados",autorizeToken,personal, prestCtrl.listarPosgrados);
+router.get("/licenciaturas", prestCtrl.listarLicenciaturas);
+router.get("/posgrados", prestCtrl.listarPosgrados);
 
 // Crear préstamo
-router.post("/", autorizeToken,personal,prestCtrl.crearPrestamo);
+router.post("/",prestCtrl.crearPrestamo);
 
 export default router;

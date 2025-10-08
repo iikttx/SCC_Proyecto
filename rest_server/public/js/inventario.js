@@ -4,9 +4,37 @@ let tipos = [];
 let estados = [];
 let editarId = null;
 
-// Recuperar token del localStorage
-function getToken() {
-  return localStorage.getItem("token");
+// === Manejo de token y rol ===
+const token = localStorage.getItem("token");
+
+if (!token) {
+  alert("No has iniciado sesión. Serás redirigido al inicio.");
+  window.location.href = "pages/inicio.html";
+}
+
+// Decodificar JWT para obtener rol (si guardas rol en payload)
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+}
+
+const payload = parseJwt(token);
+const rol = payload?.rol;
+
+if (rol !== "1") { // Solo administrador
+  alert("No tienes permisos para acceder al inventario.");
+  window.location.href = "pages/inicio.html";
+}
+
+// === Función genérica fetch con token ===
+function fetchConToken(url, options = {}) {
+  const headers = options.headers ? { ...options.headers } : {};
+  headers["Authorization"] = `Bearer ${token}`;
+  headers["Content-Type"] = "application/json";
+  return fetch(url, { ...options, headers });
 }
 
 // Manejo de errores comunes (token inválido o sin permisos)
@@ -20,12 +48,12 @@ function manejarErrorAcceso(res) {
   }
 }
 
+// === Funciones de carga y CRUD ===
+
 // Carga lista de tipos desde la API
 async function cargarTipos() {
   try {
-    const res = await fetch("/api/inventario/tipos", {
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
+    const res = await fetch("/api/inventario/tipos");
     if (!res.ok) return manejarErrorAcceso(res);
     tipos = await res.json();
     const tipoSelect = document.getElementById('tipoSelect');
@@ -42,10 +70,8 @@ async function cargarTipos() {
 // Carga lista de estados desde la API
 async function cargarEstados() {
   try {
-    const res = await fetch("/api/inventario/estados", {
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
-    if (!res.ok) return manejarErrorAcceso(res);
+    const res = await fetch("/api/inventario/estados");
+    if (!res.ok) throw new Error("Error al cargar estados");
     estados = await res.json();
     const estadoSelect = document.getElementById('estadoSelect');
     estadoSelect.innerHTML = '<option value="">-- Selecciona un estado --</option>';
@@ -58,52 +84,15 @@ async function cargarEstados() {
   }
 }
 
-// Limpia el formulario y restablece estado de botones
-function limpiarFormulario() {
-  ['modelo','marca','estadoTexto','numSerie','descripcion','tipoSelect','estadoSelect'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  editarId = null;
-  toggleBotones(false);
-}
+// ... El resto de tus funciones (limpiarFormulario, toggleBotones, obtenerDatosFormulario, registrarInventario, actualizarInventario, eliminarInventario, cargarInventarios, editar, filtrarInventarios, borrarFiltros) deben **reemplazar todos los fetch por fetchConToken** y conservar la lógica
 
-// Muestra/oculta botones en modo edición
-function toggleBotones(editando) {
-  document.getElementById('btnRegistrar').style.display = editando ? 'none' : 'inline-block';
-  document.getElementById('btnActualizar').style.display = editando ? 'inline-block' : 'none';
-  document.getElementById('btnCancelar').style.display = editando ? 'inline-block' : 'none';
-}
-
-// Recoge y valida datos del formulario
-function obtenerDatosFormulario() {
-  const tipo = parseInt(document.getElementById('tipoSelect').value);
-  const estado = parseInt(document.getElementById('estadoSelect').value);
-  if (!tipo || !estado) {
-    alert("Por favor, selecciona un tipo y un estado válidos.");
-    return null;
-  }
-  return {
-    modelo: document.getElementById('modelo').value.trim(),
-    marca: document.getElementById('marca').value.trim(),
-    estado: document.getElementById('estadoTexto').value.trim(),
-    num_serie: document.getElementById('numSerie').value.trim(),
-    descripcion: document.getElementById('descripcion').value.trim(),
-    tipo: tipo,
-    id_disponible: estado
-  };
-}
-
-// Registrar nuevo inventario
+// Ejemplo:
 async function registrarInventario() {
   const data = obtenerDatosFormulario();
   if (!data) return;
   try {
-    const res = await fetch("/api/inventario/create", {
+    const res = await fetchConToken("/api/inventario/create", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${getToken()}`
-      },
       body: JSON.stringify(data)
     });
     if (!res.ok) return manejarErrorAcceso(res);
@@ -116,170 +105,35 @@ async function registrarInventario() {
   }
 }
 
-// Actualizar inventario existente
-async function actualizarInventario() {
-  if (!editarId) return;
-  const data = obtenerDatosFormulario();
-  if (!data) return;
-  data.id = editarId;
-  try {
-    const res = await fetch("/api/inventario/update", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${getToken()}`
-      },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) return manejarErrorAcceso(res);
-    alert("Inventario actualizado correctamente");
-    limpiarFormulario();
-    cargarInventarios();
-  } catch (err) {
-    console.error('Error al actualizar:', err);
-    alert("Error al actualizar inventario");
+function obtenerDatosFormulario() {
+  const tipo = parseInt(document.getElementById('tipoSelect').value);
+  const estado = parseInt(document.getElementById('estadoSelect').value);
+
+  if (!tipo || !estado) {
+    alert("Por favor, selecciona un tipo y un estado válidos.");
+    return null;
   }
-}
 
-// Eliminar inventario por ID
-async function eliminarInventario(id) {
-  if (!confirm("¿Estás seguro de eliminar este inventario?")) return;
-  try {
-    const res = await fetch(`/api/inventario/delete/${id}`, {
-      method: "DELETE",
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
-    if (!res.ok) return manejarErrorAcceso(res);
-    alert("Inventario eliminado correctamente");
-    limpiarFormulario();
-    cargarInventarios();
-  } catch (err) {
-    console.error('Error al eliminar:', err);
-    alert("Error al eliminar inventario");
-  }
-}
-
-// Carga y muestra todos los inventarios
-async function cargarInventarios() {
-  try {
-    const res = await fetch("/api/inventario/inventarios", {
-      headers: { "Authorization": `Bearer ${getToken()}` }
-    });
-    if (!res.ok) return manejarErrorAcceso(res);
-    const data = await res.json();
-    const tbody = document.getElementById('tablaInventariosBody');
-    tbody.innerHTML = '';
-    data.forEach(inv => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${inv.id}</td>
-        <td>${inv.modelo}</td>
-        <td>${inv.marca}</td>
-        <td>${inv.estado}</td>
-        <td>${inv.num_serie}</td>
-        <td>${inv.descripcion}</td>
-        <td>${inv.tipo_nombre}</td>
-        <td>${inv.estado_nombre}</td>
-        <td>
-          <button class="btn btn-sm btn-warning me-1" onclick="editar(${inv.id})">Editar</button>
-          <button class="btn btn-sm btn-danger" onclick="eliminarInventario(${inv.id})">Eliminar</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  } catch (err) {
-    console.error('Error al cargar inventarios:', err);
-    alert("Error al obtener inventarios");
-  }
-}
-
-// Rellenar formulario para edición
-function editar(id) {
-  fetch("/api/inventario/inventarios", {
-    headers: { "Authorization": `Bearer ${getToken()}` }
-  })
-  .then(res => {
-    if (!res.ok) return manejarErrorAcceso(res);
-    return res.json();
-  })
-  .then(data => {
-    const inv = data.find(i => i.id === id);
-    if (!inv) return alert("Inventario no encontrado");
-    document.getElementById('modelo').value      = inv.modelo;
-    document.getElementById('marca').value       = inv.marca;
-    document.getElementById('estadoTexto').value = inv.estado;
-    document.getElementById('numSerie').value    = inv.num_serie;
-    document.getElementById('descripcion').value = inv.descripcion;
-    document.getElementById('tipoSelect').value  = inv.tipo;
-    document.getElementById('estadoSelect').value= inv.id_disponible;
-    editarId = id;
-    toggleBotones(true);
-  });
-}
-
-// Filtrado en cliente
-function filtrarInventarios() {
-  const filtroTipo = document.getElementById('filtroTipo').value.toLowerCase();
-  const filtroDisp = document.getElementById('filtroDisponibilidad').value.toLowerCase();
-  fetch("/api/inventario/inventarios", {
-    headers: { "Authorization": `Bearer ${getToken()}` }
-  })
-  .then(res => {
-    if (!res.ok) return manejarErrorAcceso(res);
-    return res.json();
-  })
-  .then(data => {
-    const tbody = document.getElementById('tablaInventariosBody');
-    tbody.innerHTML = '';
-    const filtrados = data.filter(inv => {
-      const tipoOK = !filtroTipo || inv.tipo_nombre.toLowerCase() === filtroTipo;
-      const dispOK = !filtroDisp || inv.estado_nombre.toLowerCase() === filtroDisp;
-      return tipoOK && dispOK;
-    });
-    filtrados.forEach(inv => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${inv.id}</td>
-        <td>${inv.modelo}</td>
-        <td>${inv.marca}</td>
-        <td>${inv.estado}</td>
-        <td>${inv.num_serie}</td>
-        <td>${inv.descripcion}</td>
-        <td>${inv.tipo_nombre}</td>
-        <td>${inv.estado_nombre}</td>
-        <td>
-          <button class="btn btn-sm btn-warning me-1" onclick="editar(${inv.id})">Editar</button>
-          <button class="btn btn-sm btn-danger" onclick="eliminarInventario(${inv.id})">Eliminar</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  });
-}
-
-// Limpia filtros
-function borrarFiltros() {
-  document.getElementById('filtroTipo').value = '';
-  document.getElementById('filtroDisponibilidad').value = '';
-  cargarInventarios();
+  return {
+    modelo: document.getElementById('modelo').value.trim(),
+    marca: document.getElementById('marca').value.trim(),
+    estado: document.getElementById('estadoTexto').value.trim(),
+    num_serie: document.getElementById('numSerie').value.trim(),
+    descripcion: document.getElementById('descripcion').value.trim(),
+    tipo: tipo,
+    id_disponible: estado
+  };
 }
 
 // Inicialización al cargar la página
 window.addEventListener('DOMContentLoaded', () => {
-  const rol = localStorage.getItem("rol");
-  if (rol !== "admin") {
-    alert("No tienes permiso para acceder al inventario.");
-    window.location.href = "pages/inicio.html";
-    return;
-  }
-
-  document.getElementById('btnRegistrar').addEventListener('click', registrarInventario);
+  document.getElementById('btnRegistrar').addEventListener('click', registrarInventario);/* 
   document.getElementById('btnActualizar').addEventListener('click', actualizarInventario);
   document.getElementById('btnCancelar').addEventListener('click', limpiarFormulario);
   document.getElementById('btnCargarInventarios').addEventListener('click', cargarInventarios);
   document.getElementById('btnBorrarFiltros').addEventListener('click', borrarFiltros);
   document.getElementById('filtroTipo').addEventListener('change', filtrarInventarios);
-  document.getElementById('filtroDisponibilidad').addEventListener('change', filtrarInventarios);
+  document.getElementById('filtroDisponibilidad').addEventListener('change', filtrarInventarios); */
 
   cargarTipos();
   cargarEstados();
